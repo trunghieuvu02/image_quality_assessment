@@ -1,1 +1,4 @@
 .idea/
+datasets/*
+src/blur_detector/__pycache__/
+src/configs/__pycache__/
