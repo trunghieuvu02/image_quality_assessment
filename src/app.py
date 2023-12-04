@@ -47,6 +47,22 @@ def detect_blur(upload_path, col1, col2, threshold):
         st.image(detected_image, caption="Processed Image", use_column_width=True)
 
 
+def sharpen_image(upload_path, col1, col2):
+    with col1:
+        image = Image.open(upload_path)
+        col1.write("Original Image :camera:")
+        st.image(upload_path, caption="Uploaded Image", use_column_width=True)
+
+    # Sharpen the image
+    # Create the sharpening kernel
+    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+    with col2:
+        img_array = np.array(image)
+        sharpened_image = cv2.filter2D(img_array, -1, kernel)
+        col2.write("Blur Detector :male-detective:")
+        st.image(sharpened_image, caption="Processed Image", use_column_width=True)
+
+
 def main():
     st.set_page_config(layout="wide", page_title="Image Background Remover")
 
@@ -72,21 +88,28 @@ def main():
 
     # Process Image Folder
     elif source_radio == "Image Folder":
-        st.info("To be completed!")
-        # Created a file uploader widget to upload a ZIP file
-        uploaded_file = st.file_uploader("Uploaded a ZIP file containing the folder:")
-        if uploaded_file:
-            progress_text = "Operation in progress. Please wait..."
-            my_bar = st.progress(0, text=progress_text)
-            unzip_file_name = uploaded_file.name.split(".")[0]
-            with zipfile.ZipFile(uploaded_file, "r") as zip_ref:
-                zip_ref.extractall("temp")
-                files = os.listdir(f"temp/{unzip_file_name}/")
-                for i, file in enumerate(files):
-                    percentage = i / len(files)
-                    my_bar.progress(percentage, text=f"Operation in progress: {i+1}/{len(files)}. Please wait...")
-                    time.sleep(0.1)
-            my_bar.empty()
+        # st.info("To be completed!")
+        # # Created a file uploader widget to upload a ZIP file
+        # uploaded_file = st.file_uploader("Uploaded a ZIP file containing the folder:")
+        # if uploaded_file:
+        #     progress_text = "Operation in progress. Please wait..."
+        #     my_bar = st.progress(0, text=progress_text)
+        #     unzip_file_name = uploaded_file.name.split(".")[0]
+        #     with zipfile.ZipFile(uploaded_file, "r") as zip_ref:
+        #         zip_ref.extractall("temp")
+        #         files = os.listdir(f"temp/{unzip_file_name}/")
+        #         for i, file in enumerate(files):
+        #             percentage = i / len(files)
+        #             my_bar.progress(percentage, text=f"Operation in progress: {i+1}/{len(files)}. Please wait...")
+        #             time.sleep(0.1)
+        #     my_bar.empty()
+        col1, col2 = st.columns(2)
+        my_upload = st.sidebar.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+
+        if my_upload is not None:
+            sharpen_image(upload_path=my_upload, col1=col1, col2=col2)
+        else:
+            sharpen_image(upload_path="./datasets/blurry/img_3.png", col1=col1, col2=col2)
 
 
 if __name__ == "__main__":

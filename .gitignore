@@ -4,3 +4,4 @@ src/blur_detector/__pycache__/
 src/configs/__pycache__/
 temp
 __pycache__/
+src/client-server/serviceAccountKey.json
